@@ -18,6 +18,7 @@ dependencies {
     implementation(libs.apksig)
     implementation(libs.bcpkix.jdk15on)
     implementation(libs.guava)
+    implementation(libs.conscrypt)
 
     testImplementation(project(":patcher"))
     testImplementation(libs.kotlin.test)

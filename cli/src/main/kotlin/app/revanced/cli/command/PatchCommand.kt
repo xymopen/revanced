@@ -109,26 +109,25 @@ internal object PatchCommand : Runnable {
     @CommandLine.Option(
         names = ["--keystore"],
         description = [
-            "Path to the keystore to sign the patched APK file with. " +
-                "Defaults to the same directory as the supplied APK file.",
+            "Path to the keystore to sign the patched APK file with.",
         ],
     )
     private var keystoreFilePath: File? = null
 
     @CommandLine.Option(
         names = ["--keystore-password"],
-        description = ["The password of the keystore to sign the patched APK file with. Empty password by default."],
+        description = ["The password of the keystore to sign the patched APK file with."],
     )
-    private var keyStorePassword: String? = null // Empty password by default
+    private var keyStorePassword: String? = "android"
 
     @CommandLine.Option(
         names = ["--alias"],
         description = ["The alias of the keystore entry to sign the patched APK file with."],
         showDefaultValue = ALWAYS,
     )
-    private fun setKeyStoreEntryAlias(alias: String = "ReVanced Key") {
+    private fun setKeyAlias(alias: String = "androiddebugkey") {
         logger.warning("The --alias option is deprecated. Use --keystore-entry-alias instead.")
-        keyStoreEntryAlias = alias
+        keyAlias = alias
     }
 
     @CommandLine.Option(
@@ -136,13 +135,13 @@ internal object PatchCommand : Runnable {
         description = ["The alias of the keystore entry to sign the patched APK file with."],
         showDefaultValue = ALWAYS,
     )
-    private var keyStoreEntryAlias = "ReVanced Key"
+    private var keyAlias = "androiddebugkey"
 
     @CommandLine.Option(
         names = ["--keystore-entry-password"],
         description = ["The password of the entry from the keystore for the key to sign the patched APK file with."],
     )
-    private var keyStoreEntryPassword = "" // Empty password by default
+    private var keyPassword = "android"
 
     @CommandLine.Option(
         names = ["--signer"],
@@ -246,9 +245,33 @@ internal object PatchCommand : Runnable {
                 "${outputFilePath.nameWithoutExtension}-options.json",
             )
 
-        val keystoreFilePath =
-            keystoreFilePath ?: outputFilePath.parentFile
-                .resolve("${outputFilePath.nameWithoutExtension}.keystore")
+        var keystoreFilePath = keystoreFilePath
+        if (keystoreFilePath == null) {
+            var androidHomePath = listOf(
+                System.getProperty("ANDROID_USER_HOME"),
+                System.getenv("ANDROID_USER_HOME"),
+                System.getProperty("ANDROID_PREFS_ROOT"),
+                System.getenv("ANDROID_PREFS_ROOT"),
+                System.getProperty("ANDROID_SDK_HOME"),
+                System.getenv("ANDROID_SDK_HOME"),
+            )
+                .map { it?.let { File(it) } }
+                .find { it?.isDirectory == true }
+
+            if (androidHomePath == null) {
+                val userHomePath = listOf(
+                    System.getProperty("XDG_CONFIG_HOME"),
+                    System.getenv("XDG_CONFIG_HOME"),
+                    System.getProperty("user.home"),
+                    System.getenv("HOME"),
+                )
+                    .find { it != null } as String
+                androidHomePath = File("$userHomePath/.android")
+                androidHomePath.mkdirs()
+            }
+
+            keystoreFilePath = File("$androidHomePath/debug.keystore")
+        }
 
         // endregion
 
@@ -325,8 +348,8 @@ internal object PatchCommand : Runnable {
                     ApkUtils.KeyStoreDetails(
                         keystoreFilePath,
                         keyStorePassword,
-                        keyStoreEntryAlias,
-                        keyStoreEntryPassword,
+                        keyAlias,
+                        keyPassword,
                     ),
                 )
             } else {

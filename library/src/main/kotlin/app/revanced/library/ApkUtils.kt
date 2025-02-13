@@ -248,7 +248,7 @@ object ApkUtils {
     class SigningOptions(
         val keyStore: File,
         val keyStorePassword: String?,
-        val alias: String = "ReVanced Key",
+        val alias: String = "androiddebugkey",
         val password: String = "",
         val signer: String = "ReVanced",
     )
@@ -264,7 +264,7 @@ object ApkUtils {
     class KeyStoreDetails(
         val keyStore: File,
         val keyStorePassword: String? = null,
-        val alias: String = "ReVanced Key",
+        val alias: String = "androiddebugkey",
         val password: String = "",
     )
 
@@ -275,7 +275,7 @@ object ApkUtils {
      * @param validUntil The date until which the certificate is valid.
      */
     class PrivateKeyCertificatePairDetails(
-        val commonName: String = "ReVanced",
-        val validUntil: Date = Date(System.currentTimeMillis() + (365.days * 8).inWholeMilliseconds * 24),
+        val commonName: String = "Android Debug",
+        val validUntil: Date = Date(System.currentTimeMillis() + (365.days * 30).inWholeMilliseconds * 24),
     )
 }

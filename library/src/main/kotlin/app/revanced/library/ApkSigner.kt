@@ -8,8 +8,8 @@ import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.cert.X509v3CertificateBuilder
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter
-import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
+import org.conscrypt.OpenSSLProvider
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -28,12 +28,12 @@ object ApkSigner {
     private val logger = Logger.getLogger(ApkSigner::class.java.name)
 
     init {
-        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
-            Security.addProvider(BouncyCastleProvider())
+        if (Security.getProvider("Conscrypt") == null) {
+            Security.addProvider(OpenSSLProvider("Conscrypt"))
         }
     }
 
-    private fun newKeyStoreInstance() = KeyStore.getInstance("BKS", BouncyCastleProvider.PROVIDER_NAME)
+    private fun newKeyStoreInstance() = KeyStore.getInstance(KeyStore.getDefaultType())
 
     /**
      * Create a new keystore with a new keypair.
@@ -117,7 +117,7 @@ object ApkSigner {
 
         val contentSigner = JcaContentSignerBuilder("SHA256withRSA").build(keyPair.private)
 
-        val name = X500Name("CN=$commonName")
+        val name = X500Name("CN=$commonName,O=Android,C=US")
         val certificateHolder = X509v3CertificateBuilder(
             name,
             BigInteger.valueOf(SecureRandom().nextLong()),
