@@ -7,6 +7,7 @@ apksig = "8.3.0"
 apkzlib = "8.3.0"
 bcpkix-jdk15on = "1.70"
 binary-compatibility-validator = "0.14.0"
+conscrypt = "2.5.2"
 guava = "33.0.0-jre"
 jackson-module-kotlin = "2.15.0"
 jadb = "1.2.1"
@@ -24,6 +25,7 @@ apktool-lib = { module = "app.revanced:apktool-lib", version.ref = "apktool-lib"
 apksig = { module = "com.android.tools.build:apksig", version.ref = "apksig" }
 apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }
 bcpkix-jdk15on = { module = "org.bouncycastle:bcpkix-jdk15on", version.ref = "bcpkix-jdk15on" }
+conscrypt = { module = "org.conscrypt:conscrypt-openjdk-uber", version.ref = "conscrypt" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-module-kotlin" }
 jadb = { module = "app.revanced:jadb", version.ref = "jadb" }
