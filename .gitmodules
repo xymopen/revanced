@@ -1,0 +1,9 @@
+[submodule "library"]
+	path = library
+	url = https://github.com/xymopen/revanced-library
+[submodule "patcher"]
+	path = patcher
+	url = https://github.com/xymopen/revanced-patcher
+[submodule "cli"]
+	path = cli
+	url = https://github.com/xymopen/revanced-cli
