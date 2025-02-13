@@ -7,3 +7,38 @@
  */
 
 rootProject.name = "revanced"
+
+buildCache {
+    local {
+        isEnabled = "CI" !in System.getenv()
+    }
+}
+
+pluginManagement {
+    repositories {
+        google()
+        maven { url = uri("https://maven.aliyun.com/repository/central") }
+        maven { url = uri("https://maven.aliyun.com/repository/gradle-plugin") }
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        maven { url = uri("https://maven.aliyun.com/repository/central") }
+        google()
+        maven {
+            // A repository must be speficied for some reason. "registry" is a dummy.
+            url = uri("https://maven.pkg.github.com/revanced/registry")
+            credentials {
+                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_ACTOR")
+                password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+include(
+    ":cli",
+    ":library",
+    ":patcher"
+)
