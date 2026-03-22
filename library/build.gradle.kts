@@ -9,22 +9,8 @@ plugins {
 
 group = "app.revanced"
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    google()
-    maven {
-        // A repository must be speficied for some reason. "registry" is a dummy.
-        url = uri("https://maven.pkg.github.com/revanced/registry")
-        credentials {
-            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
-}
-
 dependencies {
-    implementation(libs.revanced.patcher)
+    implementation(project(":patcher"))
     implementation(libs.kotlin.reflect)
     implementation(libs.jadb) // Fork with Shell v2 support.
     implementation(libs.jackson.module.kotlin)
@@ -33,7 +19,7 @@ dependencies {
     implementation(libs.bcpkix.jdk15on)
     implementation(libs.guava)
 
-    testImplementation(libs.revanced.patcher)
+    testImplementation(project(":patcher"))
     testImplementation(libs.kotlin.test)
 }
 
